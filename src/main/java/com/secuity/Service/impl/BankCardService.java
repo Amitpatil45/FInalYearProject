@@ -17,26 +17,23 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.secuity.Repo.AadharCardEntityRepo;
-import com.secuity.Repo.AadharCardRepository;
+import com.secuity.Repo.BankCardEntityRepository;
+import com.secuity.Repo.BankCardRepository;
 import com.secuity.exception.DataValidationException;
 import com.secuity.exception.GenericResponse;
-import com.secuity.model.main.AadharCard;
 import com.secuity.model.main.AadharCardDto;
-import com.secuity.model.main.AadharCardEntity;
-
-import javassist.NotFoundException;
+import com.secuity.model.main.BankCard;
+import com.secuity.model.main.BankCardEntity;
 
 @Service
-public class AadharCardService {
+public class BankCardService {
 
 	@Autowired
-	private AadharCardRepository aadharCardRepository;
+	private BankCardRepository bankCardRepository;
 
 	@Autowired
-	private AadharCardEntityRepo aadharCardEntityRepo;
+	BankCardEntityRepository bankCardEntityRepository;
 
-	// Simulated keys (replace with proper key management)
 	private static KeyPair rsaKeyPair;
 	private static SecretKey macSecretKey;
 
@@ -55,10 +52,10 @@ public class AadharCardService {
 		}
 	}
 
-	private String rsaEncrypt(AadharCard aadharCard) throws Exception {
+	private String rsaEncrypt(BankCard bankCard) throws Exception {
 		Cipher cipher = Cipher.getInstance("RSA");
 		cipher.init(Cipher.ENCRYPT_MODE, rsaKeyPair.getPublic());
-		byte[] encryptedBytes = cipher.doFinal(aadharCard.toString().getBytes());
+		byte[] encryptedBytes = cipher.doFinal(bankCard.toString().getBytes());
 		return Base64.getEncoder().encodeToString(encryptedBytes);
 	}
 
@@ -88,83 +85,60 @@ public class AadharCardService {
 		}
 	}
 
-	public String getDecryptedAadharCardData(String encryptedData) throws Exception {
-		AadharCardEntity aadharCardEntity = aadharCardEntityRepo.findById(encryptedData).orElse(null);
-		if (aadharCardEntity == null) {
-			throw new NotFoundException("Aadhar card not found");
-		}
-
-		// Decrypt encrypted data
-		String decryptedData = rsaDecrypt(aadharCardEntity.getEncryptedData(), rsaKeyPair.getPrivate());
-
-		// Verify MAC for data integrity
-		String mac = generateMAC(decryptedData);
-		if (!mac.equals(aadharCardEntity.getMac())) {
-			throw new SecurityException("Data integrity compromised");
-		}
-
-		return decryptedData;
-	}
-
 	// Create
-	public GenericResponse addAadharCard(AadharCard aadharCard) {
-		Optional<AadharCard> existingAadharCard = aadharCardRepository.findByCardNumber(aadharCard.getCardNumber());
-		if (existingAadharCard.isPresent()) {
-			throw new DataValidationException("Aadhar card with the same number already exists.");
+	public GenericResponse addBankCard(BankCard bankCard) {
+		Optional<BankCard> existingBankCard = bankCardRepository.findByAccountNumber(bankCard.getAccountNumber());
+		if (existingBankCard.isPresent()) {
+			throw new DataValidationException("Bank card with the same account number already exists.");
 		}
 
 		try {
 			// Convert AadharCardDTO to entity
-			AadharCardEntity aadharCardEntity = new AadharCardEntity();
+			BankCardEntity bankCardEntity = new BankCardEntity();
 
 			// Encrypt sensitive data with RSA
-			String encryptedData = rsaEncrypt(aadharCard);
-			aadharCardEntity.setEncryptedData(encryptedData);
+			String encryptedData = rsaEncrypt(bankCard);
+			bankCardEntity.setEncryptedData(encryptedData);
 
 			// Generate MAC for data integrity
 			String mac = generateMAC(encryptedData);
-			aadharCardEntity.setMac(mac);
+			bankCardEntity.setMac(mac);
 
 			// Save AadharCard entity with encrypted data and MAC
-			aadharCardRepository.save(aadharCardEntity);
+			bankCardEntityRepository.save(bankCardEntity);
 		} catch (Exception e) {
 			e.printStackTrace();
 			// Handle exceptions appropriately
 		}
-		aadharCardRepository.save(aadharCard);
+
+		bankCardRepository.save(bankCard);
 		return new GenericResponse(201, "Created Succesfully");
 	}
 
 	// Read
-	public List<AadharCard> getAllAadharCards() {
-		return aadharCardRepository.findAll();
+	public List<BankCard> getAllBankCards() {
+		return bankCardRepository.findAll();
 	}
 
-	public Optional<AadharCard> getAadharCardById(Long id) {
-		return aadharCardRepository.findById(id);
+	public Optional<BankCard> getBankCardById(Long id) {
+		return bankCardRepository.findById(id);
 	}
 
 	// Update
-	public GenericResponse updateAadharCard(Long id, AadharCard updatedAadharCard) {
-		Optional<AadharCard> existingAadharCard = aadharCardRepository
-				.findByCardNumber(updatedAadharCard.getCardNumber());
+	public GenericResponse updateBankCard(Long id, BankCard updatedBankCard) {
 
-		if (aadharCardRepository.existsById(id)) {
-			updatedAadharCard.setId(id);
-			aadharCardRepository.save(updatedAadharCard);
+		if (bankCardRepository.existsById(id)) {
+			updatedBankCard.setId(id);
+			bankCardRepository.save(updatedBankCard);
 			return new GenericResponse(202, "Updated Successfully");
 		}
 		return new GenericResponse(400, "Error found");
 	}
 
 	// Delete
-	public GenericResponse deleteAadharCard(Long id) {
-		Optional<AadharCard> aadharOptional = aadharCardRepository.findById(id);
-		if (aadharOptional.isEmpty()) {
-			throw new DataValidationException("Adhar not found");
-		}
-		aadharCardEntityRepo.deleteById(id);
-		aadharCardRepository.deleteById(id);
+	public GenericResponse deleteBankCard(Long id) {
+		bankCardEntityRepository.deleteById(id);
+		bankCardRepository.deleteById(id);
 		return new GenericResponse(204, "Deleted Successfully");
 	}
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.secuity.Repo.roleRepository;
 import com.secuity.Repo.userRepository;
 import com.secuity.Service.UserService;
+import com.secuity.exception.GenericResponse;
 import com.secuity.model.User;
 import com.secuity.model.userRole;
 @Service
@@ -20,7 +21,7 @@ public class userServiceImpl implements UserService {
 	private roleRepository roleRepository;
 
 	@Override
-	public User createUser(User user, Set<userRole> userRoles) throws Exception {
+	public GenericResponse createUser(User user, Set<userRole> userRoles) throws Exception {
 
 		User local = userRepository.findByUsername(user.getUsername());
 
@@ -34,7 +35,7 @@ public class userServiceImpl implements UserService {
 			user.getUserRoles().addAll(userRoles);
 			local = userRepository.save(user);
 		}
-		return local;
+		return new GenericResponse(201, "Created Succesfully");
 	}
 
 	@Override

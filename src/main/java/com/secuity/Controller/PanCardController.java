@@ -15,50 +15,51 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.secuity.Service.impl.AadharCardService;
+import com.secuity.Service.impl.PanCardService;
 import com.secuity.exception.GenericResponse;
-import com.secuity.model.main.AadharCard;
+import com.secuity.model.main.PanCard;
 
 @RestController
-@RequestMapping("/aadhar")
-public class AadharCardController {
+@RequestMapping("/pancard")
+public class PanCardController {
 
 	@Autowired
-	private AadharCardService aadharCardService;
+	private PanCardService panCardService;
 
+	// Create
 	@PostMapping("/add")
-	public ResponseEntity<GenericResponse> addAadharCard(@RequestBody AadharCard aadharCard) {
-		GenericResponse response = aadharCardService.addAadharCard(aadharCard);
+	public ResponseEntity<GenericResponse> addPanCard(@RequestBody PanCard panCard) {
+		GenericResponse response = panCardService.addPanCard(panCard);
 		return new ResponseEntity<>(response, HttpStatus.CREATED);
-
 	}
 
 	// Read
 	@GetMapping("/all")
-	public ResponseEntity<List<AadharCard>> getAllAadharCards() {
-		List<AadharCard> aadharCards = aadharCardService.getAllAadharCards();
-		return new ResponseEntity<>(aadharCards, HttpStatus.OK);
+	public ResponseEntity<List<PanCard>> getAllPanCards() {
+		List<PanCard> panCards = panCardService.getAllPanCards();
+		return new ResponseEntity<>(panCards, HttpStatus.OK);
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<AadharCard> getAadharCardById(@PathVariable("id") Long id) {
-		Optional<AadharCard> aadharCard = aadharCardService.getAadharCardById(id);
-		return aadharCard.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+	public ResponseEntity<PanCard> getPanCardById(@PathVariable("id") Long id) {
+		Optional<PanCard> panCard = panCardService.getPanCardById(id);
+		return panCard.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
 				.orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 
 	// Update
 	@PutMapping("/{id}")
-	public ResponseEntity<GenericResponse> updateAadharCard(@PathVariable("id") Long id,
-			@RequestBody AadharCard updatedAadharCard) {
-		GenericResponse response = aadharCardService.updateAadharCard(id, updatedAadharCard);
+	public ResponseEntity<GenericResponse> updatePanCard(@PathVariable("id") Long id,
+			@RequestBody PanCard updatedPanCard) {
+		GenericResponse response = panCardService.updatePanCard(id, updatedPanCard);
+
 		return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
 	}
 
 	// Delete
 	@DeleteMapping("/{id}")
-	public ResponseEntity<GenericResponse> deleteAadharCard(@PathVariable("id") Long id) {
-		GenericResponse response = aadharCardService.deleteAadharCard(id);
+	public ResponseEntity<GenericResponse> deletePanCard(@PathVariable("id") Long id) {
+		GenericResponse response = panCardService.deletePanCard(id);
 		return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 	}
 }

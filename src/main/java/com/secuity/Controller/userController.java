@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.secuity.Repo.userRepository;
 import com.secuity.Service.UserService;
+import com.secuity.exception.GenericResponse;
 import com.secuity.model.Role;
 import com.secuity.model.SMSdto;
 import com.secuity.model.User;
@@ -36,7 +39,7 @@ public class userController {
 	private userRepository userRepository;
 
 	@PostMapping("/")
-	public User createUser(@RequestBody User user) throws Exception {
+	public ResponseEntity<GenericResponse>  createUser(@RequestBody User user) throws Exception {
 
 		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 
@@ -47,7 +50,8 @@ public class userController {
 		userRole.setRole(role);
 		userRole.setUser(user);
 		userRoleSet.add(userRole);
-		return userService.createUser(user, userRoleSet);
+		GenericResponse response = userService.createUser(user, userRoleSet);
+		return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}
 
 	@GetMapping("/{userName}")

@@ -1,7 +1,5 @@
 package com.secuity.model.main;
 
-import java.util.Date;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -54,15 +52,18 @@ public class AadharCard {
 	public void setAddress(String address) {
 		this.address = address;
 	}
-	public AadharCard(Long id, String cardNumber, String holderName, String dateOfBirth, String gender,
+	public AadharCard(String cardNumber, String holderName, String dateOfBirth, String gender,
 			String address) {
 		super();
-		this.id = id;
+
 		this.cardNumber = cardNumber;
 		this.holderName = holderName;
 		this.dateOfBirth = dateOfBirth;
 		this.gender = gender;
 		this.address = address;
+	}
+	public AadharCard() {
+		// TODO Auto-generated constructor stub
 	}
 	
 	
