@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.secuity.Service.impl.AadharCardService;
 import com.secuity.exception.GenericResponse;
 import com.secuity.model.main.AadharCard;
+import com.secuity.model.main.AadharCardEntity;
+
+import javassist.NotFoundException;
 
 @RestController
 @RequestMapping("/aadhar")
@@ -60,5 +63,11 @@ public class AadharCardController {
 	public ResponseEntity<GenericResponse> deleteAadharCard(@PathVariable("id") Long id) {
 		GenericResponse response = aadharCardService.deleteAadharCard(id);
 		return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+	}
+
+	@GetMapping("/entity/{id}")
+	public ResponseEntity<AadharCardEntity> getAadharCardEntityById(@PathVariable Long id) throws NotFoundException {
+		AadharCardEntity aadharCardEntity = aadharCardService.getAadharCardEntityById(id);
+		return ResponseEntity.ok(aadharCardEntity);
 	}
 }

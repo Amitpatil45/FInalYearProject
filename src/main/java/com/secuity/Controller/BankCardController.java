@@ -18,7 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.secuity.Service.impl.BankCardService;
 import com.secuity.exception.GenericResponse;
+import com.secuity.model.main.AadharCardEntity;
 import com.secuity.model.main.BankCard;
+import com.secuity.model.main.BankCardEntity;
+import com.secuity.model.main.PanCardEntity;
+
+import javassist.NotFoundException;
 
 @RestController
 @RequestMapping("/bankcard")
@@ -47,7 +52,7 @@ public class BankCardController {
         return bankCard.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-
+  
     // Update
     @PutMapping("/{id}")
     public ResponseEntity<GenericResponse> updateBankCard(@PathVariable("id") Long id,
@@ -61,5 +66,11 @@ public class BankCardController {
     public ResponseEntity<GenericResponse> deleteBankCard(@PathVariable("id") Long id) {
     	GenericResponse response = bankCardService.deleteBankCard(id);
 		return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+    
+    @GetMapping("/entity/{id}")
+    public ResponseEntity<BankCardEntity> getBankCardEntityById(@PathVariable Long id) throws NotFoundException {
+        BankCardEntity bankCardEntity = bankCardService.getBankCardEntityById(id);
+        return ResponseEntity.ok(bankCardEntity);
     }
 }

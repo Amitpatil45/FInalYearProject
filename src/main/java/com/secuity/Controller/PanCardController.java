@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.secuity.Service.impl.PanCardService;
 import com.secuity.exception.GenericResponse;
 import com.secuity.model.main.PanCard;
+import com.secuity.model.main.PanCardEntity;
 
 @RestController
 @RequestMapping("/pancard")
@@ -62,4 +63,10 @@ public class PanCardController {
 		GenericResponse response = panCardService.deletePanCard(id);
 		return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 	}
+	
+	@GetMapping("/entiry/{id}")
+    public ResponseEntity<PanCardEntity> getPanCardEntityById(@PathVariable Long id) {
+        PanCardEntity panCardEntity = panCardService.getPanCardEntityById(id);
+        return ResponseEntity.ok(panCardEntity);
+    }
 }

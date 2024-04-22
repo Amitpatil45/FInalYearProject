@@ -162,4 +162,9 @@ public class PanCardService {
 		return new GenericResponse(204, "Deleted Successfully");
 
 	}
+
+	public PanCardEntity getPanCardEntityById(Long id) {
+		// TODO Auto-generated method stub
+		return panCardEntityRepository.getById(id);
+	}
 }

@@ -16,6 +16,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.secuity.model.main.AadharCard;
 
 @Entity
 public class User implements UserDetails {
@@ -34,14 +35,14 @@ public class User implements UserDetails {
 		// TODO Auto-generated constructor stub
 	}
 
-	  public User(Long id, String name, String username, String password, String email, String phone) {
-	        this.id = id;
-	        this.name = name;
-	        this.username = username;
-	        this.password = password;
-	        this.email = email;
-	        this.phone = phone;
-	    }
+	public User(Long id, String name, String username, String password, String email, String phone) {
+		this.id = id;
+		this.name = name;
+		this.username = username;
+		this.password = password;
+		this.email = email;
+		this.phone = phone;
+	}
 
 	public Long getId() {
 		return id;
@@ -91,44 +92,44 @@ public class User implements UserDetails {
 		this.phone = phone;
 	}
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
-    @JsonIgnore
-    private Set<userRole> userRoles = new HashSet<>();
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
+	@JsonIgnore
+	private Set<userRole> userRoles = new HashSet<>();
 
-    public Set<userRole> getUserRoles() {
-        return userRoles;
-    }
+	public Set<userRole> getUserRoles() {
+		return userRoles;
+	}
 
-    public void setUserRoles(Set<userRole> userRoles) {
-        this.userRoles = userRoles;
-    }
+	public void setUserRoles(Set<userRole> userRoles) {
+		this.userRoles = userRoles;
+	}
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        Set<Authority> set = new HashSet<>();
-        this.userRoles.forEach(userRole -> {
-            set.add(new Authority(userRole.getRole().getRoleName()));
-        });
-        return set;
-    }
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		Set<Authority> set = new HashSet<>();
+		this.userRoles.forEach(userRole -> {
+			set.add(new Authority(userRole.getRole().getRoleName()));
+		});
+		return set;
+	}
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
 
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
 
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
 
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
 }

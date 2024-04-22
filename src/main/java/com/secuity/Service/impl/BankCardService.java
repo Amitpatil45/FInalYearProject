@@ -25,6 +25,8 @@ import com.secuity.model.main.AadharCardDto;
 import com.secuity.model.main.BankCard;
 import com.secuity.model.main.BankCardEntity;
 
+import javassist.NotFoundException;
+
 @Service
 public class BankCardService {
 
@@ -141,4 +143,9 @@ public class BankCardService {
 		bankCardRepository.deleteById(id);
 		return new GenericResponse(204, "Deleted Successfully");
 	}
+
+	public BankCardEntity getBankCardEntityById(Long id) throws NotFoundException {
+        return bankCardEntityRepository.findById(id)
+                                  .orElseThrow(() -> new NotFoundException("Bank card not found"));
+    }
 }

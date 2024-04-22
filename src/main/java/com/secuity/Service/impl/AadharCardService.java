@@ -167,4 +167,9 @@ public class AadharCardService {
 		aadharCardRepository.deleteById(id);
 		return new GenericResponse(204, "Deleted Successfully");
 	}
+
+	public AadharCardEntity getAadharCardEntityById(Long id) throws NotFoundException {
+		return aadharCardEntityRepo.findById(id).orElseThrow(() -> new NotFoundException("Aadhar card not found"));
+	}
+
 }

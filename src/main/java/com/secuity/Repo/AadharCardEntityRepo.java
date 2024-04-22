@@ -9,5 +9,6 @@ import com.secuity.model.main.AadharCardEntity;
 public interface AadharCardEntityRepo  extends JpaRepository<AadharCardEntity, Long> {
 
 	Optional<AadharCardEntity> findById(String encryptedData);
+	
 
 }
